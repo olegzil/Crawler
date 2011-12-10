@@ -18,7 +18,7 @@ include $(CLEAR_VARS)
 
 LOCAL_MODULE    := libCrawler
 LOCAL_LDLIBS    += -llog -lGLESv2 $(NDK_ROOT)/sources/cxx-stl/stlport/libs/armeabi-v7a/libstlport_static.a
-LOCAL_CFLAGS    := -Werror -fexceptions -frtti
+LOCAL_CFLAGS    := -Werror -frtti
 LOCAL_SRC_FILES := gl_code.cpp
 LOCAL_C_INCLUDES += $(common_includes)
 LOCAL_C_INCLUDES += $(NDK_ROOT)/sources/cxx-stl/stlport/stlport/

@@ -49,8 +49,8 @@ static void checkGlError(const char* op) {
 struct ShaderManager
 {
     GLint program;
-    vector<const char*> mVertexShaders;
-    vector<const char*> mPixelShaders;
+    vector<string> mVertexShaders;
+    vector<string> mPixelShaders;
     ShaderManager() : program(0){}
     ~ShaderManager()
     {
@@ -95,16 +95,20 @@ public:
     bool createProgram(GLuint shaderType, const char* pShaderSource) {
         if (!program)
             program = glCreateProgram();
-        if (!program)
+        if (!program){
+            checkGlError("++++++ message 1 ");
             return false;
+        }
         
         GLuint shader = loadShader(shaderType, pShaderSource);
-        if (!shader) 
+        if (!shader) {
+            checkGlError("++++++ message 2");
             return false;
+        }
         
         GLint retVal = program;
         glAttachShader(program, shader);
-        checkGlError("glAttachShader");
+        checkGlError("++++++ message 3");
         glLinkProgram(program);
         return true;
     }
@@ -131,20 +135,22 @@ public:
     }
     void addPixelShaderSource(const char* source)
     {
-        mPixelShaders.push_back(source);
+        string temp(source);
+        mPixelShaders.push_back(temp);
     }
                     
     void addVertexShaderSource(const char* source)
     {
-        mVertexShaders.push_back(source);
+        string temp(source);
+        mVertexShaders.push_back(temp);
     }
     
     const char* getVertexShader(int index) const{
-        return mVertexShaders[index];
+        return mVertexShaders[index].c_str();
     }
     
     const char* getPixelShader(int index) const{
-        return mPixelShaders[index];
+        return mPixelShaders[index].c_str();
     }
 };
 
@@ -159,10 +165,7 @@ bool setupGraphics(int w, int h) {
     printGLString("Renderer", GL_RENDERER);
     printGLString("Extensions", GL_EXTENSIONS);
     
-    const char* shader =  gSM.getVertexShader(0);
-    LOGI("@@@@@@@@ getVertexShader %s\n", shader);
-    
-    if (!gSM.createProgram(GL_VERTEX_SHADER, shader)) {
+    if (!gSM.createProgram(GL_VERTEX_SHADER, gSM.getVertexShader(0))) {
         LOGE("Could not create program.");
         return false;
     }
@@ -214,7 +217,6 @@ JNIEXPORT void JNICALL Java_com_games_Crawler_CrawlerLib_LoadVertexShaders(JNIEn
     const char *nativeString = env->GetStringUTFChars(shader, 0);
     gSM.addVertexShaderSource(nativeString);
     env->ReleaseStringUTFChars(shader, nativeString);    
-    gSM.addVertexShaderSource(nativeString);
 }
 
 JNIEXPORT void JNICALL Java_com_games_Crawler_CrawlerLib_LoadPixelShaders(JNIEnv * env, jobject obj, jstring shader)
@@ -222,7 +224,6 @@ JNIEXPORT void JNICALL Java_com_games_Crawler_CrawlerLib_LoadPixelShaders(JNIEnv
     const char *nativeString = env->GetStringUTFChars(shader, 0);
     gSM.addPixelShaderSource(nativeString);
     env->ReleaseStringUTFChars(shader, nativeString);    
-    gSM.addVertexShaderSource(nativeString);
 }
 
 JNIEXPORT void JNICALL Java_com_games_Crawler_CrawlerLib_Initialize(JNIEnv * env, jobject obj,  jint width, jint height)

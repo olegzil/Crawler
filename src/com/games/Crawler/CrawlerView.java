@@ -72,7 +72,7 @@ class Point {
  *   bit depths). Failure to do so would result in an EGL_BAD_MATCH error.
  */
 class CrawlerView extends GLSurfaceView  implements OnTouchListener {
-    private static String TAG = "CrawlerView @@@@@@@@@@ ";
+    private static String TAG = "CrawlerView +++++++++++ ";
     private static final boolean DEBUG = false;
     private String[] mPixelShaders;
     private String[] mVertexShaders;
